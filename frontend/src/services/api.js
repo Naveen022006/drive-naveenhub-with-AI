@@ -5,7 +5,8 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Use relative paths in production to leverage Vercel's identical domain routing, bypassing CORS.
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 // Create Axios instance with default config
 const api = axios.create({

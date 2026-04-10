@@ -66,7 +66,17 @@ def create_app():
     return app
 
 
-# ── Entry Point ─────────────────────────────────────────────────
+# ── Initialize Global App Instance for Vercel ───────────────────
+# Vercel's python builder imports `app` from here rather than 
+# running __main__.
+app = create_app()
+
+# Allow OAuth over HTTP during local development. 
+# Vercel will run strictly on HTTPS natively, so this is for local testing.
+if os.environ.get("FLASK_ENV") == "development" or os.environ.get("OAUTHLIB_INSECURE_TRANSPORT") == "1":
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+# ── Entry Point (Local Execution) ───────────────────────────────
 if __name__ == "__main__":
     # Validate config on startup
     try:
@@ -76,8 +86,4 @@ if __name__ == "__main__":
         print("   Create a .env file with the required variables. See .env.example")
         exit(1)
 
-    # Allow OAuth over HTTP during local development
-    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
-    app = create_app()
     app.run(host="0.0.0.0", port=5000, debug=Config.DEBUG)

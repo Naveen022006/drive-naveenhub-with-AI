@@ -1,0 +1,55 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/app.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/vite"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/login",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/callback",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/user",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/logout",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/files",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/upload",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/download/(.*)",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/delete/(.*)",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/app.py"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/$1"
+    }
+  ]
+}
