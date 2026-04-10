@@ -66,7 +66,10 @@ def create_app():
     return app
 
 
-# ── Entry Point ─────────────────────────────────────────────────
+# ── Global App Instance for WSGI (e.g. Gunicorn) ───────────────
+app = create_app()
+
+# ── Entry Point (Local Development Only) ────────────────────────
 if __name__ == "__main__":
     # Validate config on startup
     try:
@@ -79,5 +82,4 @@ if __name__ == "__main__":
     # Allow OAuth over HTTP during local development
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-    app = create_app()
     app.run(host="0.0.0.0", port=5000, debug=Config.DEBUG)

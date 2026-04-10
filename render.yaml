@@ -1,0 +1,38 @@
+services:
+  # ── Backend Flask API ───────────────────────────────────────────
+  - type: web
+    name: naveenhub-api
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      # You will need to provide your exact Google credentials in the Render Dashboard
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      # The webhook/callback URL will need your actual Render API domain
+      - key: GOOGLE_REDIRECT_URI
+        value: https://<YOUR_RENDER_API_DOMAIN>/callback
+      # Target the frontend URL for CORS protections
+      - key: FRONTEND_URL
+        value: https://<YOUR_RENDER_FRONTEND_DOMAIN>
+
+  # ── Frontend React Web App ──────────────────────────────────────
+  - type: web
+    name: naveenhub-web
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Automatically pass the Backend URL into Vite during the automated build step
+      - key: VITE_API_URL
+        value: https://<YOUR_RENDER_API_DOMAIN>
