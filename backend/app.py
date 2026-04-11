@@ -19,7 +19,10 @@ def create_app():
     Returns:
         Configured Flask application instance
     """
-    app = Flask(__name__)
+    # Serve static files from the frontend's dist directory
+    import os
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist'))
+    app = Flask(__name__, static_folder=dist_dir, static_url_path='/')
 
     # ── Core Configuration ──────────────────────────────────────
     app.secret_key = Config.SECRET_KEY
@@ -45,7 +48,7 @@ def create_app():
     app.register_blueprint(chat_bp)
 
     # ── Health Check ────────────────────────────────────────────
-    @app.route("/")
+    @app.route("/api/health")
     def health_check():
         """Health check endpoint for deployment platforms."""
         return jsonify({
@@ -53,6 +56,18 @@ def create_app():
             "app": "NaveenHub Drive Assistant API",
             "version": "1.0.0",
         }), 200
+
+    # ── Serve Frontend SPA ──────────────────────────────────────
+    from flask import send_from_directory
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve(path):
+        """Catch-all route to serve React SPA and its static assets."""
+        if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+            return send_from_directory(app.static_folder, path)
+        if os.path.exists(os.path.join(app.static_folder, 'index.html')):
+            return send_from_directory(app.static_folder, 'index.html')
+        return jsonify({"error": "Frontend build not found. Run npm run build."}), 404
 
     # ── Global Error Handlers ───────────────────────────────────
     @app.errorhandler(404)

@@ -1,16 +1,20 @@
 services:
-  # ── Backend Flask API ───────────────────────────────────────────
+  # ── Unified NaveenHub Full-Stack App ────────────────────────────
   - type: web
-    name: naveenhub-api
+    name: naveenhub
     env: python
-    rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    # We run the build from the project root so we can access both frontend and backend
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn app:app
     envVars:
       - key: FLASK_ENV
         value: production
       - key: SECRET_KEY
         generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: NODE_VERSION
+        value: 20.11.1
       # You will need to provide your exact Google credentials in the Render Dashboard
       - key: GOOGLE_CLIENT_ID
         sync: false
@@ -18,21 +22,11 @@ services:
         sync: false
       - key: NVIDIA_API_KEY
         sync: false
-      # The webhook/callback URL will need your actual Render API domain
+      # For a unified service, the FRONTEND_URL and GOOGLE_REDIRECT_URI can be the same domain
       - key: GOOGLE_REDIRECT_URI
-        value: https://<YOUR_RENDER_API_DOMAIN>/callback
-      # Target the frontend URL for CORS protections
+        value: https://<YOUR_RENDER_EXTERNAL_URL>/callback
       - key: FRONTEND_URL
-        value: https://<YOUR_RENDER_FRONTEND_DOMAIN>
-
-  # ── Frontend React Web App ──────────────────────────────────────
-  - type: web
-    name: naveenhub-web
-    env: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      # Automatically pass the Backend URL into Vite during the automated build step
+        value: https://<YOUR_RENDER_EXTERNAL_URL>
+      # Tell the Vite build what the API URL is
       - key: VITE_API_URL
-        value: https://<YOUR_RENDER_API_DOMAIN>
+        value: https://<YOUR_RENDER_EXTERNAL_URL>
