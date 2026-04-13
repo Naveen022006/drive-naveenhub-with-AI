@@ -233,21 +233,6 @@ Note: Update the Google Cloud Console to add `https://naveenhub-api.onrender.com
 
 ---
 
-## 🌍 Step 4: Connect Custom Domain (`navinhub.dev`)
-
-### 4.1 Frontend Domain (Vercel)
-
-1. In your Vercel project → **Settings** → **Domains**
-2. Add `navinhub.dev` and `www.navinhub.dev`
-3. Vercel will give you DNS records to add
-
-### 4.2 Backend Subdomain (Render)
-
-1. In your Render service → **Settings** → **Custom Domains**
-2. Add `api.navinhub.dev`
-3. Render will give you a CNAME record
-
-### 4.3 DNS Configuration
 
 At your domain registrar (e.g., Namecheap, Cloudflare, GoDaddy), add:
 

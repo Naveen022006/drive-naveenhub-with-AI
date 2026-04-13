@@ -38,3 +38,4 @@ instance/
 credentials.json
 token.json
 client_secret*.json
+AWS_EC2_DEPLOYMENT_ANALYSIS.md
